@@ -1,0 +1,47 @@
+<html>
+    <body>
+<h1>État des espèces menacées dans le monde</h1>
+
+<select id="pays" name="pays">
+  <% pays.forEach(function(p) { %>
+    <option value="<%= p.id %>"><%= p.name %></option>
+  <% }); %>
+</select>
+
+<h2>Les espèces menacées dans les pays sélectionnés :</h2>
+
+<ul id="liste-espèces">
+  <% species.forEach(function(e) { %>
+    <li>
+      <%= e.name %> (<%= e.type %>) - <%= e.status %> 
+      (Protégé depuis <%= e.year %>)
+    </li>
+  <% }); %>
+</ul>
+
+<script>
+  // Exemple de code JavaScript pour afficher la liste d'espèces
+  document.addEventListener("DOMContentLoaded", function() {
+    var selectPays = document.getElementById('pays');
+    var listeEspèces = document.getElementById('liste-espèces');
+
+    selectPays.addEventListener('change', function() {
+      // Récupérer l'ID du pays sélectionné et afficher les espèces correspondantes
+      var idPays = selectPays.value;
+      fetch('/get-species-for/' + idPays)
+        .then(response => response.json())
+        .then(data => {
+          listeEspèces.innerHTML = '';
+          data.espèces.forEach(function(e) {
+            var li = document.createElement('LI');
+            li.textContent = `${e.nom} (${e.type}) - ${e.statut} (${e.year} ans de protection)`;
+            listeEspèces.appendChild(li);
+          });
+        })
+        .catch(error => console.error(error));
+    });
+
+  });
+</script>
+</body>
+</html>
