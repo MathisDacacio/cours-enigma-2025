@@ -6,8 +6,8 @@
   "module": "src/index.js",
   "exports": [],
   "scripts": {
-    "dev": "node app.js",
-    "debug": "nodemon --inspect app.js",
+    "dev": "node src/app.js",
+    "debug": "nodemon --inspect src/app.js",
     "prettier": "npx prettier . --write",
     "prepare": "husky",
     "linter": "npx eslint",
