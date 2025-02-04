@@ -28,6 +28,9 @@
     </script>
 <% } %>
 <script>
+  const userLang = navigator.language || navigator.userLanguage; 
+  const mappingToRedListLanguages = {"fr":"fre", "en":"eng", "es":"spa"}
+
   // Exemple de code JavaScript pour afficher la liste d'espèces
   document.addEventListener("DOMContentLoaded", function() {
     var selectPays = document.getElementById('pays');
@@ -42,7 +45,12 @@
           listeEspeces.innerHTML = '';
           data.forEach(function(e) {
             var li = document.createElement('LI');
-            li.textContent = `${e.name} - ${e.status} (depuis ${e.year})`;
+            const common_name = e.common_names[mappingToRedListLanguages[userLang]]
+            if(common_name==undefined) {
+                li.innerHTML = `<i>${e.latin_name}</i> - ${e.status} (depuis ${e.year})`;
+            } else {
+                li.innerHTML = `${common_name} - ${e.status} (depuis ${e.year})`;
+            }
             listeEspeces.appendChild(li);
           });
         })

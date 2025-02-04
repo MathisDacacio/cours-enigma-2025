@@ -1,5 +1,4 @@
 const express = require("express");
-// https://www.npmjs.com/package/ejs
 const ejs = require("ejs");
 const fs = require("fs");
 const axios = require("axios");
@@ -58,6 +57,22 @@ app.get("/", (req, res) => {
   );
 });
 
+function extractDataFromAssessmentAPICall(userLanguage, response) {
+  console.info(`Processing ${response.data.taxon.scientific_name}`);
+  let returned = {
+    latin_name: response.data.taxon.scientific_name,
+    type: "",
+    common_names: response.data.taxon.common_names.reduce(function (map, obj) {
+      map[obj.language] = obj.name;
+      return map;
+    }, {}),
+    status: response.data.red_list_category.description.en,
+    year: response.data.year_published,
+  };
+  console.info(`Processed ${response.data.taxon.scientific_name}`);
+  return returned;
+}
+
 app.get("/get-species-for/:codePays", async function (req, res) {
   console.info(`Searching for endangered species in "${req.params.codePays}"`);
   // This is dangerous !
@@ -77,15 +92,9 @@ app.get("/get-species-for/:codePays", async function (req, res) {
         }),
       ).then(function (responseArray) {
         let transformedAssessments = responseArray.map(function (response) {
-          console.info(`Processing ${response.data.taxon.scientific_name}`);
-          return {
-            name: response.data.taxon.scientific_name,
-            type: "",
-            status: response.data.red_list_category.description.en,
-            year: response.data.year_published,
-          };
+          return extractDataFromAssessmentAPICall(req.locale, response);
         });
-        transformedAssessments.sort((a, b) => a.name.localeCompare(b.name));
+        console.info(`Processed ${assessments.length} endangered species`);
         res.send(transformedAssessments);
       });
     })
