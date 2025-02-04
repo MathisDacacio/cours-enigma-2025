@@ -1,0 +1,14 @@
+{
+    "scripts": ["linter"],
+    "tasks": [
+      "security-audit",
+      "updates",
+      "dependencies-exact-version",
+      "project-size",
+      "dependencies-check",
+      "dependencies-size",
+      "require-time"
+    ],
+    "verbose": true,
+    "level": "error"
+}
