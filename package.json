@@ -11,7 +11,12 @@
     "prettier": "npx prettier . --write",
     "prepare": "husky",
     "linter": "npx eslint",
-    "test": "jest"
+    "test": "jest --verbose"
+  },
+  "jest": {
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
   },
   "files": [
     "src/**"

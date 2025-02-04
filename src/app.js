@@ -1,6 +1,7 @@
 const express = require("express");
 const ejs = require("ejs");
 const fs = require("fs");
+const getCountries = require("./countries.js");
 let axios = require("axios");
 require("dotenv").config();
 
@@ -11,24 +12,8 @@ const IUCN_AUTH_HEADER = {
     Authorization: process.env.IUCN_API_TOKEN,
   },
 };
-function extractCountryInfos(country) {
-  return {
-    name: country.name.common,
-    id: country.cca2,
-  };
-}
 
-let countries = [];
-// Use axios to fetch country list from restcountries api
-console.log("Using axios to load countries list");
-axios.get("https://restcountries.com/v3.1/all").then(function (response) {
-  let inputCountries = response.data.map(extractCountryInfos);
-  inputCountries.sort(function (a, b) {
-    return a.name.localeCompare(b.name);
-  });
-  countries = countries.concat(inputCountries);
-  console.log(`Obtained ${countries.length} countries`);
-});
+let countries = await getCountries();
 
 const indexPath = __dirname + "/views/index.ejs";
 console.log("getting index template at " + indexPath);
@@ -105,3 +90,5 @@ const port = 3000;
 app.listen(port, () => {
   console.log(`Serveur démarré à http://localhost:${port}`);
 });
+
+module.exports = [getCountries];
