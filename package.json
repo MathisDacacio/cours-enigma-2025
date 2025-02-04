@@ -2,15 +2,20 @@
   "name": "enigma",
   "version": "1.0.0",
   "description": "Une application d'exemple pour lire la liste des espèces menacées dans un pays triées par année",
-  "main": "index.js",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "exports": [],
   "scripts": {
     "dev": "node app.js",
     "debug": "nodemon --inspect app.js",
     "prepare": "husky"
   },
+  "files": [
+    "src/**"
+  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Riduidel/cours-enigma-2025.git"
+    "url": "git@github.com:Riduidel/cours-enigma-2025.git"
   },
   "keywords": [
     "tutorial",
@@ -33,7 +38,8 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
-    "prettier": "3.4.2"
+    "prettier": "3.4.2",
+    "typescript": "^5.7.3"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
