@@ -20,6 +20,9 @@
   <% }); %>
 </ul>
 
+
+Les données de protection viennent de<br/>
+IUCN 2024. IUCN Red List of Threatened Species. Version 2024-2 <www.iucnredlist.org> 
 <% } else { %>
     La liste des pays est en cours de chargement.
     La page va se recharger dans une seconde
@@ -43,13 +46,23 @@
         .then(response => response.json())
         .then(data => {
           listeEspeces.innerHTML = '';
-          data.forEach(function(e) {
+          data
+            .map(function(e) {
+                const c = e.common_names[mappingToRedListLanguages[userLang]]
+                return {
+                    is_latin_name: c==undefined,
+                    name: c==undefined ? e.latin_name : c,
+                    status: e.status,
+                    year: e.year
+                }
+            })
+            .toSorted((a, b) => a.name.localeCompare(b.name))
+            .forEach(function(e) {
             var li = document.createElement('LI');
-            const common_name = e.common_names[mappingToRedListLanguages[userLang]]
-            if(common_name==undefined) {
-                li.innerHTML = `<i>${e.latin_name}</i> - ${e.status} (depuis ${e.year})`;
+            if(e.is_latin_name) {
+                li.innerHTML = `<i>${e.name}</i> - ${e.status} (depuis ${e.year})`;
             } else {
-                li.innerHTML = `${common_name} - ${e.status} (depuis ${e.year})`;
+                li.innerHTML = `${e.name} - ${e.status} (depuis ${e.year})`;
             }
             listeEspeces.appendChild(li);
           });
