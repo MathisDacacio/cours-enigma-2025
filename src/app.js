@@ -1,7 +1,8 @@
 const express = require("express");
 const ejs = require("ejs");
 const fs = require("fs");
-const axios = require("axios");
+let axios = require("axios");
+const { setupCache } = require("axios-cache-interceptor/dev");
 const { ConcurrencyManager } = require("axios-concurrency");
 require("dotenv").config();
 
