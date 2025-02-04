@@ -2,7 +2,6 @@ const express = require("express");
 const ejs = require("ejs");
 const fs = require("fs");
 let axios = require("axios");
-const { setupCache } = require("axios-cache-interceptor/dev");
 require("dotenv").config();
 
 const app = express();
