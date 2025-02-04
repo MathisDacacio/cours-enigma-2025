@@ -3,16 +3,9 @@ const ejs = require("ejs");
 const fs = require("fs");
 let axios = require("axios");
 const { setupCache } = require("axios-cache-interceptor/dev");
-const { ConcurrencyManager } = require("axios-concurrency");
 require("dotenv").config();
 
 const app = express();
-
-// a concurrency parameter of 1 makes all api requests secuential
-const MAX_CONCURRENT_REQUESTS = 5;
-
-// init your manager.
-const manager = ConcurrencyManager(axios, MAX_CONCURRENT_REQUESTS);
 
 const IUCN_AUTH_HEADER = {
   headers: {
