@@ -1,4 +1,7 @@
 <html>
+    <head>
+        <link rel="stylesheet" href="https://unpkg.com/mvp.css"> 
+    </head>
     <body>
 <h1>État des espèces menacées dans le monde</h1>
 
@@ -9,15 +12,9 @@
   <% }); %>
 </select>
 
-<h2>Les espèces menacées dans les pays sélectionnés :</h2>
+<h2>Les espèces menacées dans le pays sélectionné</h2>
 
 <ul id="species">
-  <% species.forEach(function(e) { %>
-    <li>
-      <%= e.name %> - <%= e.status %> 
-      (Protégé depuis <%= e.year %>)
-    </li>
-  <% }); %>
 </ul>
 
 
@@ -40,12 +37,12 @@ IUCN 2024. IUCN Red List of Threatened Species. Version 2024-2 <www.iucnredlist.
     var listeEspeces = document.getElementById('species');
 
     selectPays.addEventListener('change', function() {
+      listeEspeces.innerHTML = '';
       // Récupérer l'ID du pays sélectionné et afficher les espèces correspondantes
       var idPays = selectPays.value;
       fetch('/get-species-for/' + idPays)
         .then(response => response.json())
         .then(data => {
-          listeEspeces.innerHTML = '';
           data
             .map(function(e) {
                 const c = e.common_names[mappingToRedListLanguages[userLang]]
