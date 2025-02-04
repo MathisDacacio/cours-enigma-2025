@@ -2,22 +2,22 @@ const express = require("express");
 const ejs = require("ejs");
 const fs = require("fs");
 const axios = require("axios");
-const rateLimit = require("axios-rate-limit");
+const { ConcurrencyManager } = require("axios-concurrency");
 require("dotenv").config();
 
 const app = express();
+
+// a concurrency parameter of 1 makes all api requests secuential
+const MAX_CONCURRENT_REQUESTS = 5;
+
+// init your manager.
+const manager = ConcurrencyManager(axios, MAX_CONCURRENT_REQUESTS);
 
 const IUCN_AUTH_HEADER = {
   headers: {
     Authorization: process.env.IUCN_API_TOKEN,
   },
 };
-const iucnClient = rateLimit(axios.create(), {
-  maxRequests: 1,
-  perMilliseconds: 1000,
-  maxRPS: 2,
-});
-
 function extractCountryInfos(country) {
   return {
     name: country.name.common,
@@ -28,7 +28,7 @@ function extractCountryInfos(country) {
 let countries = [];
 // Use axios to fetch country list from restcountries api
 console.log("Using axios to load countries list");
-iucnClient.get("https://restcountries.com/v3.1/all").then(function (response) {
+axios.get("https://restcountries.com/v3.1/all").then(function (response) {
   let inputCountries = response.data.map(extractCountryInfos);
   inputCountries.sort(function (a, b) {
     return a.name.localeCompare(b.name);
@@ -60,6 +60,7 @@ app.get("/", (req, res) => {
 function extractDataFromAssessmentAPICall(userLanguage, response) {
   console.info(`Processing ${response.data.taxon.scientific_name}`);
   let returned = {
+    id: response.data.assessmentId,
     latin_name: response.data.taxon.scientific_name,
     type: "",
     common_names: response.data.taxon.common_names.reduce(function (map, obj) {
@@ -77,18 +78,18 @@ app.get("/get-species-for/:codePays", async function (req, res) {
   console.info(`Searching for endangered species in "${req.params.codePays}"`);
   // This is dangerous !
   const url = `https://api.iucnredlist.org/api/v4/countries/${req.params.codePays}`;
-  return await iucnClient
+  return axios
     .get(url, IUCN_AUTH_HEADER)
     .then(function (response) {
       let assessments = response.data.assessments;
-      assessments = assessments.slice(0, Math.min(assessments.length, 10));
+      //      assessments = assessments.slice(0, Math.min(assessments.length, 10));
       console.info(`Processing ${assessments.length} endangered species`);
       // Hack that to check some things
       Promise.all(
         assessments.map(function (assessment) {
           const assessmentId = assessment.assessment_id;
           const url = `https://api.iucnredlist.org/api/v4/assessment/${assessmentId}`;
-          return iucnClient.get(url, IUCN_AUTH_HEADER);
+          return axios.get(url, IUCN_AUTH_HEADER);
         }),
       ).then(function (responseArray) {
         let transformedAssessments = responseArray.map(function (response) {
