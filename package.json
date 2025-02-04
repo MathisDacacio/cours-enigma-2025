@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "node app.js",
     "debug": "nodemon --inspect app.js",
+    "prettier": "npx prettier . --write",
     "prepare": "husky"
   },
   "files": [
