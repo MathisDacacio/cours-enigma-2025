@@ -26,6 +26,8 @@
   "homepage": "https://github.com/Riduidel/cours-enigma-2025#readme",
   "dependencies": {
     "axios": "^1.7.9",
+    "axios-rate-limit": "^1.4.0",
+    "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2"
   },

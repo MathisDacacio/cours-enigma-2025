@@ -33,12 +33,12 @@ https://fr.wikipedia.org/wiki/Liste_des_codes_HTTP?useskin=vector
 ### Donc maintenant qu'on a une belle API bien complète, on va développer une application
 ### qui, à partir d'un pays, donne la liste des noms d'espcèes menacées triées par années.
 
-GET https://api.iucnredlist.org/api/v4/countries/FR
+GET https://api.iucnredlist.org/api/v4/countries/IO
 accept: application/json
 Authorization: mp6cgxGRGUT6EZ6jbS6dEBsWAsRYGvSscvQR
 
 ### Et on récupère une espèce
 
-GET https://api.iucnredlist.org/api/v4/assessment/500969
+GET https://api.iucnredlist.org/api/v4/assessment/733287
 accept: application/json
 Authorization: mp6cgxGRGUT6EZ6jbS6dEBsWAsRYGvSscvQR

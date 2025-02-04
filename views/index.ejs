@@ -2,6 +2,7 @@
     <body>
 <h1>État des espèces menacées dans le monde</h1>
 
+<% if(pays.length > 0){ %>
 <select id="pays" name="pays">
   <% pays.forEach(function(p) { %>
     <option value="<%= p.id %>"><%= p.name %></option>
@@ -10,20 +11,27 @@
 
 <h2>Les espèces menacées dans les pays sélectionnés :</h2>
 
-<ul id="liste-espèces">
+<ul id="species">
   <% species.forEach(function(e) { %>
     <li>
-      <%= e.name %> (<%= e.type %>) - <%= e.status %> 
+      <%= e.name %> - <%= e.status %> 
       (Protégé depuis <%= e.year %>)
     </li>
   <% }); %>
 </ul>
 
+<% } else { %>
+    La liste des pays est en cours de chargement.
+    La page va se recharger dans une seconde
+    <script>
+        response.setIntHeader("Refresh", 1);
+    </script>
+<% } %>
 <script>
   // Exemple de code JavaScript pour afficher la liste d'espèces
   document.addEventListener("DOMContentLoaded", function() {
     var selectPays = document.getElementById('pays');
-    var listeEspèces = document.getElementById('liste-espèces');
+    var listeEspeces = document.getElementById('species');
 
     selectPays.addEventListener('change', function() {
       // Récupérer l'ID du pays sélectionné et afficher les espèces correspondantes
@@ -31,11 +39,11 @@
       fetch('/get-species-for/' + idPays)
         .then(response => response.json())
         .then(data => {
-          listeEspèces.innerHTML = '';
-          data.espèces.forEach(function(e) {
+          listeEspeces.innerHTML = '';
+          data.forEach(function(e) {
             var li = document.createElement('LI');
-            li.textContent = `${e.nom} (${e.type}) - ${e.statut} (${e.year} ans de protection)`;
-            listeEspèces.appendChild(li);
+            li.textContent = `${e.name} - ${e.status} (depuis ${e.year})`;
+            listeEspeces.appendChild(li);
           });
         })
         .catch(error => console.error(error));
