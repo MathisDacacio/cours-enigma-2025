@@ -11,7 +11,7 @@
     "prettier": "npx prettier . --write",
     "prepare": "husky",
     "linter": "npx eslint",
-    "test": "jest --verbose"
+    "test": "jest --verbose --passWithNoTests"
   },
   "jest": {
     "testMatch": [
