@@ -103,6 +103,20 @@ async function main() {
               Message : ${revision[4].trim()}`);
   });
 
+  app.get("/reload", async (req, res) => {
+    exec(
+      'pkill -f "npm run dev" && cd /home/ubuntu/cours-enigma-2025 && git pull && npm run dev',
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error: ${stderr}`);
+          return res.status(500).send("Failed to update");
+        }
+        console.log(`Success: ${stdout}`);
+        res.status(200).send("App updated successfully");
+      },
+    );
+  });
+
   // Démarrage du serveur
   const port = 80;
   app.listen(port, () => {
