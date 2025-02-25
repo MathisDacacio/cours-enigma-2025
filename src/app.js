@@ -91,6 +91,18 @@ async function main() {
       });
   });
 
+  app.get("/version", (req, res) => {
+    revision = require("child_process")
+      .execSync("git show --summary")
+      .toString()
+      .trim()
+      .split("\n");
+    res.send(`Version de l'application : ${revision[0].split(" ")[1]},
+              Auteur : ${revision[1].split(":")[1].split("<")[0].trim()},
+              Date : ${revision[2].split("Date:")[1].split("+")[0].trim()},
+              Message : ${revision[4].trim()}`);
+  });
+
   // Démarrage du serveur
   const port = 3000;
   app.listen(port, () => {
